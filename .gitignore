@@ -1,0 +1,37 @@
+# Python
+*.pyc
+__pycache__/
+*.pyo
+*.pyd
+*.env
+.venv/
+
+# Jupyter Notebooks
+*.ipynb_checkpoints
+
+# VSCode
+.vscode/
+
+# Checkpoints
+checkpoints/*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Data, models, output, report (ignore contents, keep folders)
+data/*
+!data/.gitkeep
+models/*
+!models/.gitkeep
+output/*
+!output/.gitkeep
+report/*
+!report/.gitkeep
+
+# Logs
+*.log
+
+# Others
+*.bak
+*.tmp
