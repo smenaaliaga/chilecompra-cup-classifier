@@ -1,0 +1,41 @@
+# === CONFIGURACIÓN DE ENTRENAMIENTO ===
+train:
+  # Rutas de entrada y salida
+  input_file: "data/chilecompra.csv"
+  output_model_dir: "models/setfit_model_mpnet"
+  output_report_file: "report/classification_report_mpnet.txt"
+  
+  # Columnas del archivo de entrada
+  text_column: "glosa"
+  label_column: "cup"
+  
+  # Modelo base
+  base_model: "sentence-transformers/paraphrase-multilingual-mpnet-base-v2"
+  
+  # Filtro de clases pequeñas
+  min_class_size: 8
+  # Undersampling
+  max_samples: 50
+  
+  # Parámetros del modelo
+  max_seq_length: 128
+  batch_size: 96
+  num_epochs: 3
+  num_iterations: 200
+  
+  # Split de datos
+  test_size: 0.2
+  random_state: 42
+
+# === CONFIGURACIÓN DE PREDICCIÓN ===
+predict:
+  # Rutas de entrada y salida
+  input_file: "data/chilecompra_2024.csv"
+  output_file: "output/predictions_chilecompra_2024.csv"
+  model_dir: "models/setfit_model_mpnet"
+  
+  # Columnas del archivo
+  text_column: "glosa"
+  label_column: "cup"
+  prediction_column: "prediction"
+  confidence_column: "confidence"

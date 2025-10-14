@@ -1,25 +1,87 @@
 # ChileCompra CUP Classifier
 
-Implementación de un modelo de clasificación semántica para glosas de Ordenes de Compra de Chilecompra, utilizando de base el framework SetFit + Sentence Transformers.
+Implementación de un modelo de clasificación semántica para glosas de 
+Ordenes de Compra de Chilecompra, utilizando de base el framework 
+SetFit + Sentence Transformers.
 
-## Estructura principal
-- **data/**: Datos de entrada (CSV, Excel) para entrenamiento y predicción.
-- **models/**: Modelos entrenados.
-- **output/**: Resultados y predicciones generadas por los modelos.
-- **report/**: Reportes de métricas y análisis de clasificación.
-- **train_mpnet.py | train_e5.py**: Scripts de entrenamiento de modelos.
-- **predict.py | predict_with_setfit.py**: Scripts para clasificar nuevas glosas usando modelos entrenados.
-- **utils/process_text_batch.py**: Limpieza y normalización masiva de glosas.
+## Estructura del proyecto
 
-## Uso básico
-1. Preprocesa las glosas con `utils/process_text_batch.py`.
-2. Entrena el modelo con `train_mpnet.py` o variantes.
-3. Clasifica nuevas glosas con `predict.py`.
-4. Revisa los reportes en la carpeta `report/` y las predicciones en `output/`.
+```
+bc_chilecompra_setfit/
+├── data/                    # Archivos de datos 
+├── models/                  # Modelos entrenados
+├── output/                  # Predicciones generadas
+├── report/                  # Reportes de métricas
+├── config/                  # Configuración centralizada
+│   └── config.yaml         # Rutas de archivos
+├── utils/                  # Scripts auxiliares
+├── train_mpnet.py          # Entrenar modelo
+├── predict.py              # Clasificar textos
+└── requirements.txt        # Dependencias
+```
 
-## Requisitos
-- Python 3.10+ (recomendado)
-- Instalar dependencias con `pip install -r requirements.txt` 
+## Configuración
 
-## Notas
-- Los scripts están preparados para trabajar con GPU si está disponible.
+### Archivo `config/config.yaml`
+Este archivo controla todo el proyecto. Tiene dos secciones principales:
+
+**`train:` - Para entrenar el modelo**
+```yaml
+train:
+  # Dataset a entrada
+  input_file: "data/chilecompra.csv"
+  # Donde guardar modelo
+  output_model_dir: "models/setfit_model_mpnet" 
+  # Reporte de métricas
+  output_report_file: "report/classification_report_mpnet.txt"
+  # Modelo base
+  base_model: "sentence-transformers/paraphrase-multilingual-mpnet-base-v2"
+  ...
+```
+
+**`predict:` - Para hacer predicciones**
+```yaml
+predict:
+  # Dataset a predecir
+  input_file: "data/chilecompra_2024.csv" 
+  # Donde guardar resultados
+  output_file: "output/predictions.csv"
+  # Modelo a utilizar
+  model_dir: "models/setfit_model_mpnet"
+  ...
+
+```
+
+## Uso
+
+### Entrenar modelo
+```bash
+python train_mpnet.py
+```
+**Proceso completo:**
+- Lee datos desde `train.input_file`
+- Usa columnas `train.text_column` y `train.label_column`
+- Filtra clases con menos de `min_class_size` muestras
+- Reduce clases con más de `max_samples` muestras (undersampling)
+- Entrena modelo base `base_model` con parámetros `batch_size`, `num_epochs`
+- Guarda modelo entrenado en `train.output_model_dir`
+- Genera reporte de métricas en `train.output_report_file`
+
+### Hacer predicciones
+```bash
+python predict.py
+```
+- Lee datos desde `predict.input_file`
+- Usa modelo desde `predict.model_dir`
+- Guarda predicciones en `predict.output_file`
+
+### Ver resultados
+- **Modelo entrenado:** `models/setfit_model_mpnet/`
+- **Predicciones:** `output/predictions.csv`
+- **Reporte:** `report/classification_report_mpnet.txt`
+
+## Instalación
+
+```bash
+pip install -r requirements.txt
+```

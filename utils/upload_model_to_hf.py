@@ -1,14 +1,18 @@
 import os
 from dotenv import load_dotenv
 from huggingface_hub import HfApi, login, create_repo, upload_folder
+from utils.config_loader import get_model_paths
 
 # Cargar variables del archivo .env
 load_dotenv()
 
+# ==== CARGA DE RUTAS ====
+model_config = get_model_paths()
+
 # Configura el token de acceso personal de Hugging Face
-HF_TOKEN = os.getenv("HF_TOKEN") #or "<TU_TOKEN_AQUI>" 
-REPO_ID =  os.getenv("MODEL_REPO_ID") #or "<usuario>/<nombre-repo>"
-MODEL_DIR = "models/setfit_model_mpnet"
+HF_TOKEN = os.getenv("HF_TOKEN")
+REPO_ID = os.getenv("MODEL_REPO_ID")
+MODEL_DIR = model_config.get('model_dir', 'models/setfit_model_mpnet')
 
 # Inicia sesión
 login(token=HF_TOKEN)
@@ -27,7 +31,7 @@ def upload_model(model_dir, repo_id):
         repo_id=repo_id,
         folder_path=model_dir,
         commit_message="Subida inicial del modelo",
-        ignore_patterns=["*.pt", "*.bin", "*.pkl", "*.md"]  # Ajusta según lo que quieras subir
+        ignore_patterns=["*.pt", "*.bin", "*.pkl", "*.md"]
     )
     print(f"Modelo subido a https://huggingface.co/{repo_id}")
 
