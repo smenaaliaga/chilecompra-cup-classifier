@@ -61,9 +61,9 @@ python train_mpnet.py
 **Proceso completo:**
 - Lee datos desde `train.input_file`
 - Usa columnas `train.text_column` y `train.label_column`
-- Filtra clases con menos de `min_class_size` muestras
-- Reduce clases con más de `max_samples` muestras (undersampling)
-- Entrena modelo base `base_model` con parámetros `batch_size`, `num_epochs`
+- Filtra clases con menos de `train.min_class_size` muestras
+- Reduce clases con más de `train.max_samples` muestras (undersampling)
+- Entrena modelo base `train.base_model` con parámetros `train.batch_size`, `train.num_epochs`
 - Guarda modelo entrenado en `train.output_model_dir`
 - Genera reporte de métricas en `train.output_report_file`
 
