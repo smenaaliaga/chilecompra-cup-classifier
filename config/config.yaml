@@ -4,6 +4,8 @@ train:
   input_file: "data/chilecompra.csv"
   output_model_dir: "models/setfit_model_mpnet"
   output_report_file: "report/classification_report_mpnet.txt"
+  # Predicciones de prueba
+  output_predictions_test: "output/predictions_test.csv"
   
   # Columnas del archivo de entrada
   text_column: "glosa"

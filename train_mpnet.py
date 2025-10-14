@@ -178,7 +178,7 @@ def main():
         # "second_pred": top2_class,
         # "second_confidence": top2_conf
     })
-    predictions_file = output_config.get('predictions_file', 'output/predictions_mpnet.csv')
+    predictions_file = train_config.get('output_predictions_test', 'output/predictions_test.csv')
     results_df.to_csv(predictions_file, index=False)
     print("Modelo y reportes guardados ✓ (mpnet)")
 
