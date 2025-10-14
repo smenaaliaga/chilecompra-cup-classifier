@@ -9,6 +9,7 @@ from datasets import Dataset, DatasetDict
 from setfit import SetFitModel, SetFitTrainer
 from collections import Counter
 import random
+import time
 from utils.config_loader import get_train_config
 
 def balance_classes(df, max_samples=50):
@@ -31,6 +32,9 @@ def balance_classes(df, max_samples=50):
 
 
 def main():
+    # ---- INICIO DEL CRONOMETRO ----
+    start_time = time.time()
+    
     # ---- CARGA DE CONFIGURACIÓN ----
     train_config = get_train_config()
     
@@ -110,7 +114,10 @@ def main():
     )
 
     print("Training (mpnet-improved)...")
+    training_start = time.time()
     trainer.train()
+    training_end = time.time()
+    training_time = training_end - training_start
     print("Training completed!")
 
     # ---- EVAL ----
@@ -140,6 +147,9 @@ def main():
     # ---- SAVE RESULTS ----
     report_file = train_config.get('output_report_file', 'report/classification_report_mpnet.txt')
     
+    # Calcular tiempo total
+    total_time = time.time() - start_time
+    
     with open(report_file, "w", encoding="utf-8") as f:
         f.write("REPORTE DE CLASIFICACIÓN SETFIT (mpnet-improved)\n")
         f.write("="*60 + "\n\n")
@@ -152,6 +162,26 @@ def main():
         f.write(f"\n\nClases problemáticas (F1=0): {len(problematic_classes)}\n")
         if problematic_classes:
             f.write(f"Clases: {problematic_classes}\n")
+        
+        # Información del modelo y parámetros
+        f.write("\n" + "="*60 + "\n")
+        f.write("INFORMACIÓN DEL MODELO Y ENTRENAMIENTO\n")
+        f.write("="*60 + "\n\n")
+        f.write(f"Modelo base: {base_model}\n")
+        f.write(f"Dispositivo: {device}\n")
+        f.write(f"Archivo de entrada: {train_input_file}\n")
+        f.write(f"Columnas: texto='{text_column}', etiqueta='{label_column}'\n")
+        f.write(f"- Tamaño de train: {len(train_df)}\n")
+        f.write(f"- Tamaño de test: {len(test_df)}\n\n")
+        
+        f.write("Parámetros de entrenamiento:\n")
+        f.write(f"- batch_size: {batch_size}\n")
+        f.write(f"- num_epochs: {num_epochs}\n")
+        f.write(f"- num_iterations: {num_iterations}\n")
+        
+        f.write("TIEMPOS DE EJECUCIÓN:\n")
+        f.write(f"- Tiempo de entrenamiento: {training_time:.2f} segundos ({training_time/60:.2f} minutos)\n")
+        f.write(f"- Tiempo total: {total_time:.2f} segundos ({total_time/60:.2f} minutos)\n")
 
     # Guardar modelo
     out_dir = train_config.get('output_model_dir', './models/setfit_model_mpnet')
@@ -174,9 +204,7 @@ def main():
         "label": y_true,
         "pred": predictions,
         "confidence": top1_conf,
-        "correct": [yt == yp for yt, yp in zip(y_true, predictions)],
-        # "second_pred": top2_class,
-        # "second_confidence": top2_conf
+        "correct": [yt == yp for yt, yp in zip(y_true, predictions)]
     })
     predictions_file = train_config.get('output_predictions_test', 'output/predictions_test.csv')
     results_df.to_csv(predictions_file, index=False)
