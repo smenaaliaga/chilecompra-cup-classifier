@@ -1,18 +1,15 @@
 import os
 from dotenv import load_dotenv
 from huggingface_hub import HfApi, login, create_repo, upload_file
-from utils.config_loader import get_data_paths
 
 # Cargar variables del archivo .env
 load_dotenv()
 
 # ==== CARGA DE RUTAS ====
-data_config = get_data_paths()
-
 # Configura el token de acceso personal de Hugging Face
 HF_TOKEN = os.getenv("HF_TOKEN")
 REPO_ID = os.getenv("DATASET_REPO_ID")
-DATASET_FILE = data_config.get('dataset_file', 'data/chilecompra.csv')
+DATASET_FILE = 'data/chilecompra.csv'  # Ruta directa al dataset
 
 # Inicia sesión
 login(token=HF_TOKEN)

@@ -9,7 +9,7 @@ train:
   
   # Columnas del archivo de entrada
   text_column: "glosa"
-  label_column: "cup"
+  label_column: "cup_final"
   
   # Modelo base
   base_model: "sentence-transformers/paraphrase-multilingual-mpnet-base-v2"
@@ -20,11 +20,13 @@ train:
   max_samples: 50
   
   # Parámetros del modelo
-  max_seq_length: 128
+  max_seq_length: 256  
   batch_size: 96
   num_epochs: 3
-  num_iterations: 200
-  
+  num_iterations: 400 
+  learning_rate: 2e-5
+  warmup_proportion: 0.0
+
   # Split de datos
   test_size: 0.2
   random_state: 42
@@ -32,12 +34,12 @@ train:
 # === CONFIGURACIÓN DE PREDICCIÓN ===
 predict:
   # Rutas de entrada y salida
-  input_file: "data/chilecompra_2024.csv"
+  input_file: "data/chilecompra_2024_processed.csv"
   output_file: "output/predictions_chilecompra_2024.csv"
   model_dir: "models/setfit_model_mpnet"
   
   # Columnas del archivo
   text_column: "glosa"
-  label_column: "cup"
+  label_column: "cup_final"
   prediction_column: "prediction"
   confidence_column: "confidence"

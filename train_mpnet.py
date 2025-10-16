@@ -91,29 +91,31 @@ def main():
     labels = sorted(df_balanced["label"].unique())
     model = SetFitModel.from_pretrained(base_model, labels=labels)
     # Ajustes del modelo
-    max_seq_length = train_config.get('max_seq_length', 128)
+    max_seq_length = train_config.get('max_seq_length', 256)
     model.model_body.max_seq_length = max_seq_length 
     model = model.to(device)
 
     # ---- TRAINER ----
-    batch_size = train_config.get('batch_size', 96)
-    num_epochs = train_config.get('num_epochs', 3)
-    num_iterations = train_config.get('num_iterations', 200)
+    batch_size = train_config.get('batch_size', 64)
+    num_epochs = train_config.get('num_epochs', 5)
+    num_iterations = train_config.get('num_iterations', 400)
+    learning_rate = float(train_config.get('learning_rate', 2e-5))
+    warmup_proportion = float(train_config.get('warmup_proportion', 0.1))
     seed = train_config.get('random_state', 42)
-    
+
     trainer = SetFitTrainer(
         model=model,
         train_dataset=dset["train"],
         eval_dataset=dset["validation"],
         batch_size=batch_size,
-        num_epochs=num_epochs, 
-        num_iterations=num_iterations,   
-        # learning_rate=2e-5,   
-        # warmup_proportion=0.1,  
+        num_epochs=num_epochs,
+        num_iterations=num_iterations,
+        learning_rate=learning_rate,
+        warmup_proportion=warmup_proportion,
         seed=seed,
     )
 
-    print("Training (mpnet-improved)...")
+    print("Training (mpnet-improved...")
     training_start = time.time()
     trainer.train()
     training_end = time.time()
@@ -177,7 +179,7 @@ def main():
         f.write("Parámetros de entrenamiento:\n")
         f.write(f"- batch_size: {batch_size}\n")
         f.write(f"- num_epochs: {num_epochs}\n")
-        f.write(f"- num_iterations: {num_iterations}\n")
+        f.write(f"- num_iterations: {num_iterations}\n\n")
         
         f.write("TIEMPOS DE EJECUCIÓN:\n")
         f.write(f"- Tiempo de entrenamiento: {training_time:.2f} segundos ({training_time/60:.2f} minutos)\n")
@@ -190,14 +192,8 @@ def main():
     # Guardar predicciones
     probas = trainer.model.predict_proba(test_df["text"].tolist())
     top1_idx = np.argmax(probas, axis=1)
-    top2_idx = np.argsort(probas, axis=1)[:, -2]
-
-    # Obtener lista de labels
-    labels_list = trainer.model.config["labels"] if hasattr(trainer.model, "config") else labels
 
     top1_conf = probas[np.arange(len(probas)), top1_idx]
-    top2_conf = probas[np.arange(len(probas)), top2_idx]
-    top2_class = [labels_list[i] for i in top2_idx]
 
     results_df = pd.DataFrame({
         "text": test_df["text"],
@@ -209,6 +205,7 @@ def main():
     predictions_file = train_config.get('output_predictions_test', 'output/predictions_test.csv')
     results_df.to_csv(predictions_file, index=False)
     print("Modelo y reportes guardados ✓ (mpnet)")
+
 
 if __name__ == "__main__":
     main()

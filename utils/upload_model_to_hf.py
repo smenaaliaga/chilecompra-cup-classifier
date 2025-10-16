@@ -1,18 +1,15 @@
 import os
 from dotenv import load_dotenv
 from huggingface_hub import HfApi, login, create_repo, upload_folder
-from utils.config_loader import get_model_paths
 
 # Cargar variables del archivo .env
 load_dotenv()
 
 # ==== CARGA DE RUTAS ====
-model_config = get_model_paths()
-
 # Configura el token de acceso personal de Hugging Face
 HF_TOKEN = os.getenv("HF_TOKEN")
 REPO_ID = os.getenv("MODEL_REPO_ID")
-MODEL_DIR = model_config.get('model_dir', 'models/setfit_model_mpnet')
+MODEL_DIR = 'models/setfit_model_mpnet'  # Ruta directa al modelo
 
 # Inicia sesión
 login(token=HF_TOKEN)

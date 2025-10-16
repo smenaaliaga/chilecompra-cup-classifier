@@ -44,15 +44,11 @@ df[confidence_column] = confidences
 
 # ==== GUARDADO DE RESULTADOS ====
 os.makedirs(os.path.dirname(OUTPUT_CSV), exist_ok=True)
-df.to_csv(OUTPUT_CSV, encoding="latin1", index=False)
+df.to_csv(OUTPUT_CSV, encoding="utf-8", index=False)
 print(f"Predicciones guardadas en {OUTPUT_CSV}")
 
-preds = pd.read_csv("output/predictions_chilecompra_2024_mpnet.csv", encoding="utf-8")
-merged = df.merge(preds, on="id", suffixes=("", "_pred"))
-merged.to_csv("output/predictions_chilecompra_2024_mpnet.csv", index=False, encoding="utf-8")
-
 # ==== ANÁLISIS ESTADÍSTICO (si existe columna de etiquetas) ====
-label_column = predict_config.get('label_column', 'cup')
+label_column = predict_config.get('label_column', 'cup_final')
 if label_column in df.columns:
     from sklearn.metrics import accuracy_score, f1_score, classification_report, confusion_matrix
     y_true = df[label_column].astype(str).tolist()
