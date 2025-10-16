@@ -28,7 +28,7 @@ def upload_model(model_dir, repo_id):
         repo_id=repo_id,
         folder_path=model_dir,
         commit_message="Subida inicial del modelo",
-        ignore_patterns=["*.pt", "*.bin", "*.pkl", "*.md"]
+        ignore_patterns=["*.pt", "*.bin", "*.md"]  # NO ignorar .pkl
     )
     print(f"Modelo subido a https://huggingface.co/{repo_id}")
 
