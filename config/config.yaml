@@ -34,8 +34,8 @@ train:
 # === CONFIGURACIÓN DE PREDICCIÓN ===
 predict:
   # Rutas de entrada y salida
-  input_file: "data/chilecompra_2024_processed.csv"
-  output_file: "output/predictions_chilecompra_2024.csv"
+  input_file: "data/chilecompra_2024_processed.xlsx"
+  output_file: "output/predictions_chilecompra_2024.xlsx"
   model_dir: "models/setfit_model_mpnet"
   
   # Columnas del archivo

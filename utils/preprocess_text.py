@@ -84,21 +84,29 @@ def process_text(text: str) -> str:
     return t
 
 def process_csv(input_csv, output_csv, text_column='text'):
-    df = pd.read_csv(input_csv)
+    if input_csv.lower().endswith('.xlsx'):
+        # Excel no requiere encoding, pandas maneja bien los caracteres especiales
+        df = pd.read_excel(input_csv)
+    else:
+        df = pd.read_csv(input_csv, encoding='utf-8')
     if text_column not in df.columns:
         print(f"ERROR: El archivo debe tener una columna llamada '{text_column}'.")
         return
     # Guarda el texto original en una nueva columna
     df[f"{text_column}_original"] = df[text_column]
     df[text_column] = df[text_column].map(process_text)
-    # Remueve duplicados basados en la columna procesada
-    df = df.drop_duplicates(subset=[text_column])
-    df.to_csv(output_path, index=False)
+    # # Remueve duplicados basados en la columna procesada
+    # df = df.drop_duplicates(subset=[text_column])
+    # Guardar como Excel para máxima compatibilidad de caracteres
+    if output_path.lower().endswith('.xlsx'):
+        df.to_excel(output_path, index=False)
+    else:
+        df.to_csv(output_path, index=False, encoding="utf-8")
     print(f"Archivo procesado guardado en {output_path}")
 
 if __name__ == "__main__":
     # Configura los nombres de archivo aquí
-    input_csv = "data/chilecompra_2024.csv"
-    output_path = "data/chilecompra_2024_processed.csv"
-    text_column = "glosa"  # Cambia si tu columna se llama distinto
+    input_csv = "data/chilecompra_2024.xlsx"
+    output_path = "data/chilecompra_2024_processed.xlsx"
+    text_column = "glosa" 
     process_csv(input_csv, output_path, text_column)

@@ -20,10 +20,14 @@ print(f"Cargando modelo desde: {MODEL_PATH}")
 model = SetFitModel.from_pretrained(MODEL_PATH)
 
 # ==== LECTURA DE TEXTOS ====
+
 if not os.path.exists(INPUT_CSV):
     print(f"ERROR: No se encuentra el archivo {INPUT_CSV}")
     exit(1)
-df = pd.read_csv(INPUT_CSV)
+if INPUT_CSV.lower().endswith('.xlsx'):
+    df = pd.read_excel(INPUT_CSV)
+else:
+    df = pd.read_csv(INPUT_CSV, encoding="utf-8")
 
 # Obtener nombres de columnas desde configuración
 text_column = predict_config.get('text_column', 'glosa')
@@ -44,7 +48,10 @@ df[confidence_column] = confidences
 
 # ==== GUARDADO DE RESULTADOS ====
 os.makedirs(os.path.dirname(OUTPUT_CSV), exist_ok=True)
-df.to_csv(OUTPUT_CSV, encoding="utf-8", index=False)
+if OUTPUT_CSV.lower().endswith('.xlsx'):
+    df.to_excel(OUTPUT_CSV, index=False)
+else:
+    df.to_csv(OUTPUT_CSV, encoding="utf-8", index=False)
 print(f"Predicciones guardadas en {OUTPUT_CSV}")
 
 # ==== ANÁLISIS ESTADÍSTICO (si existe columna de etiquetas) ====
