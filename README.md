@@ -1,8 +1,9 @@
 # ChileCompra CUP Classifier
 
-Implementación de un modelo de clasificación semántica para glosas de 
-Ordenes de Compra de Chilecompra, utilizando de base el framework 
-SetFit + Sentence Transformers.
+Implementación de un modelo de clasificación semántica de las glosas de órdenes de compra de ChileCompra, con el objetivo de asignar automáticamente el Código Único de Producto (CUP 2013).
+
+La implementación se basa en el framework de _few-shot learning_ [SetFit](https://github.com/huggingface/setfit)
+, que combina _Sentence Transformers_, _Contrastive Learning_ y modelos de _Machine Learning_ clásico para aprender de manera eficiente incluso con pocas muestras por clase.
 
 ## Estructura del proyecto
 

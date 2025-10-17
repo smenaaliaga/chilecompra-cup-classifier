@@ -10,7 +10,7 @@ MODEL_PATH = predict_config.get('model_dir', 'models/setfit_model_mpnet')
 
 # === CARGA DEL MODELO ===
 print(f"Cargando modelo desde: {MODEL_PATH}")
-model = SetFitModel.from_pretrained(MODEL_PATH)
+model = SetFitModel.from_pretrained(MODEL_PATH, local_files_only=True)
 
 # === TEXTOS DE PRUEBA ===
 textos = [
